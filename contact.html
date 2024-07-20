@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - Wisdom Woods</title>
+<link rel="stylesheet" href="stylescontact.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<style>
+.error {
+color: red;
+font-size: 14px;
+margin-top: 5px;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x:auto; /*scrollable*/ 
+    background-image: url('backg7.jpg'); 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+
+}
+</style>
+<script>
+$(document).ready(function() {
+// Add custom email validation method if needed
+$.validator.addMethod("validEmail", function(value, element) {
+// Regular expression for email validation
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+return this.optional(element) || emailPattern.test(value);
+}, "Please enter a valid email address.");
+
+// Initialize form validation
+$("#contactForm").validate({
+rules: {
+name: {
+required: true
+},
+email: {
+required: true,
+validEmail: true
+},
+message: {
+required: true
+}
+},
+messages: {
+name: {
+required: "Name is required."
+},
+email: {
+required: "Please enter your email address.",
+validEmail: "Please enter a valid email address."
+},
+message: {
+required: "Message cannot be empty."
+}
+},
+errorPlacement: function(error, element) {
+// Place the error message in a span after the element
+error.addClass('error');
+error.insertAfter(element);
+},
+submitHandler: function(form) {
+form.submit(); // Submit the form if valid
+}
+});
+});
+</script>
+</head>
+<body>
+<header>
+<img src="logo.png" alt="Wisdom Woods Logo" class="logo">
+<h1>Wisdom Woods</h1>
+</header>
+<nav>
+<a href="contact.html">Contact Us</a>
+<a href="log with jquery.html">Login</a>
+<a href="about.html">About Us</a>
+<a href="index.html">Home</a>
+</nav>
+<div class='overlay'></div>
+<div class="content">
+<h2>Contact Us</h2>
+<p>Have a question or feedback? We'd love to hear from you! Please use the form below to get in touch with us.</p>
+<form id="contactForm" action="#" method="POST">
+<div class="id">
+<label for="name">Name:</label>
+<input type="text" id="name" name="name" required><br><br>
+</div>
+<div class="id">
+<label for="email">Email:</label>
+<input type="email" id="email" name="email" required><br><br>
+</div>
+<div class="id">
+<label for="message">Message:</label><br>
+<textarea id="message" name="message" rows="6" required></textarea><br><br>
+<input type="submit" value="Submit">
+</div>
+</form>
+<div class="contact-info">
+<h3>Contact Information</h3>
+<p><strong>Email:</strong> contact@wisdomwoods.com</p>
+<p><strong>Phone:</strong> +91 9999444422</p>
+</div>
+</div>
+<footer>
+<p>&copy; 2024 Wisdom Woods. All rights reserved.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Wisdom Woods</title>
+    <link rel="stylesheet" href="stylereg.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <style>
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Mouse enter event
+            $('#submitButton').on('mouseenter', function() {
+                console.log('Mouse entered the submit button.');
+                $(this).css('background-color', 'red'); //
+            });
+
+        //Reset the button style when the mouse leaves
+            $('#submitButton').on('mouseleave', function() {
+                $(this).css('background-color', ''); // Reset to original color
+            });
+        });
+        //for avoiding alphabets
+        $(document).ready(function() {
+            $('#phone').on('input',function(){
+               // var cursorposition=this.selectionstart;
+                const newValue=$(this).val().replace(/[^0-9]/g,'');
+                $(this).val(newValue);
+                //this.setSelectionRange(cursorposition,cursorposition);
+
+            });
+        });     
+        $(document).ready(function() {
+            // Set max date for Date of Birth input
+            const today = new Date().toISOString().split('T')[0];
+            $('#dob').attr('max', today);
+
+            // Handle state change to update districts
+            const districts = {
+                "State1": ["Ernakulam", "Thrissur", "Trivandrum"],
+                "State2": ["Chennai", "Coimbatore", "Erode"],
+                "State3": ["Mysuru", "Kodagu", "Udupi"]
+            };
+
+            $('#state').on('change', function() {
+                const selectedState = $(this).val();
+                const $districtSelect = $('#district');
+                $districtSelect.empty().append('<option value="">Select your district</option>');
+                if (districts[selectedState]) {
+                    $.each(districts[selectedState], function(index, district) {
+                        $districtSelect.append(`<option value="${district}">${district}</option>`);
+                    });
+                }
+            });
+
+            // Add custom validation methods
+            $.validator.addMethod("validDOB", function(value, element) {
+                const dob = new Date(value);
+                const today = new Date();
+                if (dob > today) {
+                    return false;
+                }
+                let age = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                return age >= 18;
+            }, "You must be at least 18 years old to register.");
+
+            $.validator.addMethod("validPassword", function(value, element) {
+                return this.optional(element) || /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[!@#\$%\^\&*\)\(+=._-]+/.test(value);
+            }, "Password must contain uppercase, lowercase, digit, and special character.");
+
+            // Initialize jQuery validation
+            $("#registrationForm").validate({
+                rules: {
+                    fullname: {
+                        required: true
+                    },
+                    gender: {
+                        required: true
+                    },
+                    dob: {
+                        required: true,
+                        date: true,
+                        validDOB: true
+                    },
+                    state: {
+                        required: true
+                    },
+                    district: {
+                        required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    phone: {
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10
+                    },
+                    username: {
+                        required: true
+                    },
+                    password: {
+                        required: true,
+                        minlength: 8,
+                        validPassword: true
+                    },
+                    "confirm-password": {
+                        required: true,
+                        equalTo: "#password"
+                    },
+                    agree:{required:true}
+                },
+                messages: {
+                    fullname: {
+                        required: "Please enter your full name"
+                    },
+                    gender: {
+                        required: "Please select your gender"
+                    },
+                    dob: {
+                        required: "Please enter your date of birth",
+                        date: "Please enter a valid date",
+                        validDOB: "You must be at least 18 years old to register."
+                    },
+                    state: {
+                        required: "Please select your state"
+                    },
+                    district: {
+                        required: "Please select your district"
+                    },
+                    email: {
+                        required: "Please enter your email address",
+                        email: "Please enter a valid email address"
+                    },
+                    phone: {
+                        required: "Please enter your phone number",
+                        digits: "Please enter a valid 10-digit phone number",
+                        minlength: "Please enter a valid 10-digit phone number",
+                        maxlength: "Please enter a valid 10-digit phone number"
+                    },
+                    username: {
+                        required: "Please enter your username"
+                    },
+                    password: {
+                        required: "Please enter a password",
+                        minlength: "Password must be at least 8 characters long"
+                    },
+                    "confirm-password": {
+                        required: "Please confirm your password",
+                        equalTo: "Passwords do not match"
+                    },
+                    agree:{required:"You must accept the terms and conditions"},
+                },
+                errorPlacement: function(error, element) {
+                    error.appendTo(`#${element.attr('id')}-error`);
+                },
+                submitHandler: function(form) {
+                    alert("Registration successfull !");
+                    form.reset();
+                  //  return false;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<header>
+    <img src="logo.png" alt="Wisdom Woods Logo" class="logo">
+    <h1>Wisdom Woods</h1>
+</header>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="log with jquery.html">Login</a>
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact Us</a>
+</nav>
+<div class="container">
+    <h1>Register</h1>
+    <form id="registrationForm" class="registration-form">
+        <div class="form-group">
+            <label for="fullname">Full Name <span class="required">*</span></label>
+            <input type="text" id="fullname" name="fullname" placeholder="Enter your name" required>
+            <span class="error" id="fullname-error"></span>
+        </div>
+        <div class="form-group gender">
+            <label>Gender:</label>
+            <label for="male">
+                <input type="radio" id="male" name="gender" value="male"> Male
+            </label>
+            <label for="female">
+                <input type="radio" id="female" name="gender" value="female"> Female
+            </label>
+            <label for="prefer-not-to-say">
+                <input type="radio" id="prefer-not-to-say" name="gender" value="prefer-not-to-say"> Prefer not to say
+            </label>
+            <span class="error" id="gender-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="dob">Date of Birth <span class="required">*</span></label>
+            <input type="date" id="dob" name="dob" placeholder="Dob" required>
+            <span class="error" id="dob-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="state">State <span class="required">*</span></label>
+            <select id="state" name="state" required>
+                <option value="">Select your state</option>
+                <option value="State1">Kerala</option>
+                <option value="State2">Tamil Nadu</option>
+                <option value="State3">Karnataka</option>
+            </select>
+            <span class="error" id="state-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="district">District <span class="required">*</span></label>
+            <select id="district" name="district" required>
+                <option value="">Select your district</option>
+            </select>
+            <span class="error" id="district-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <span class="error" id="email-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number <span class="required">*</span></label>
+            <input type="text" id="phone" name="phone" placeholder="Enter your phone number" required>
+            <span class="error" id="phone-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="username">Username <span class="required">*</span></label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            <span class="error" id="username-error"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password <span class="required">*</span></label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <span class="error" id="password-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm password <span class="required">*</span></label>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                <span class="error" id="confirm-password-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="agree">
+                <input type="checkbox" id="agree" required>I accept the <a href="terms.html">terms and conditions</a> <span class="required">*</span></label>
+                <span class="error" id="agree-error"></span>
+            </div>
+            <button type="submit">Register</button>
+            <div class="signin_link">
+                Already have an account? <a href="log with jquery.html">login</a>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2024 Wisdom Woods. All rights reserved.</p>
+    </footer>
+</body>
+</html>
